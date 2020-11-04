@@ -1,16 +1,16 @@
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 public class Checkout{
 	
-	//global calendar instance
-	private static Calendar cal = Calendar.getInstance();
-	private static Date d = new Date();
+	//global scanner instance
+	private static Scanner in = new Scanner(System.in);
+	
 	
 	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-		String requestedToolCode = "";
+		Date date = new Date();
 		Tool requestedTool = new Tool();
-		boolean inList = false;
 		int daysRequested = -1;
 		int discountPercent = -1;
 		
@@ -27,86 +27,118 @@ public class Checkout{
 		}
 		
 		//prompts user for input
-		do {
-			System.out.println("Enter tool code: ");
-			if(in.hasNext()) {
-				requestedToolCode = in.next();
-			}
-			inList = Inventory.toolList.containsKey(requestedToolCode);
-			if (!inList) {
-				System.out.println("Tool code: " + requestedToolCode + " is not valid. Please try again.");
-			}
-			else {
-				requestedTool = Inventory.toolList.get(requestedToolCode);
-			}
-		} while(!inList);
-		do {
-			System.out.println("Enter number of days for rental: ");
-			if(in.hasNextInt()) {
-				daysRequested = in.nextInt();
-			}
-			if (daysRequested < 0) {
-				System.out.println("Invalid entry. Please enter a value > 0.");
-			}
-		} while (daysRequested < 0);
-		do {
-			System.out.println("Enter discount amount: ");
-			if(in.hasNextInt()) {
-				discountPercent = in.nextInt();
-			}
-			if (discountPercent > 100 || discountPercent < 0) {
-				System.out.println("Invalid entry. Please enter a value 0 to 100.");
-			}
-		} while (discountPercent > 100 || discountPercent < 0);
+		requestedTool = getTool();
+		daysRequested = getDayCount();
+		discountPercent = getDiscount();
+		date = getDate();
 		
-		checkout(requestedTool, daysRequested, discountPercent);
-		
-		
+		//checks out product
+				checkout(requestedTool, daysRequested, discountPercent, date);	
+				
 	}
 	
+	public static Tool getTool() {
+		boolean inList = false;
+		Tool reqTool = new Tool();
+		String inputToolCode = "";
+		
+		try {
+			System.out.println("Enter tool code: ");
+			if(in.hasNext()) {
+				inputToolCode = in.next();
+			}
+			inList = Inventory.toolList.containsKey(inputToolCode);
+			if (inList) {
+				reqTool = Inventory.toolList.get(inputToolCode);
+			}
+			else {
+				throw new Exception();
+			}
+		} catch(Exception e) {
+			System.out.println("Invalid tool coode. Please try again.");
+			getTool();
+		}
+		
+		return reqTool;
+	}
+		
+		
+	public static int getDayCount() {
+		int inputNumDays = 0;
+
+		try {
+			System.out.println("Enter number of days for rental: ");
+			if(in.hasNextInt()) {
+				inputNumDays = in.nextInt();
+			}
+			if (inputNumDays <= 0) {
+				throw new Exception();
+			}
+		} catch (Exception e) {
+			System.out.println("Invalid entry. Please enter a value > 0.");
+			getDayCount();
+		}
+		
+		return inputNumDays;
+	}
+		
+	public static int getDiscount() {
+		int inputDiscount = 0;
+		
+		try {
+			System.out.println("Enter discount amount: ");
+			if(in.hasNextInt()) {
+				inputDiscount = in.nextInt();
+			}
+			if (inputDiscount > 100 || inputDiscount < 0) {
+				throw new Exception();
+			}
+		} catch (Exception e) {
+			System.out.println("Invalid entry. Please enter value 0 to 100.");
+			getDiscount();
+		}
+		
+		return inputDiscount;
+	}
+		
+	
+	public static Date getDate() {	
+		Date date = null;
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy");
+		formatter.setLenient(false);
+		String inputDate = "";
+		
+		
+		try { 
+			System.out.println("Enter start date: ");
+			if(in.hasNextLine()) {
+				inputDate = in.nextLine();
+				date = formatter.parse(inputDate);
+			}
+			else {
+				throw new Exception();
+			}
+		} catch (ParseException e) {
+			System.out.println("Invalid entry. Please enter date format as MM/DD/YY");
+			getDate();
+		} catch (Exception e) {
+			System.out.println("Invalid entry. Please enter date format as MM/DD/YY");
+			getDate();
+		}
+		
+		return date;
+	}
+
 	
 	
 	/*
 	 * Checks out tool and produces a Rental Agreement.
 	 */
-	public static RentalAgreement checkout(Tool toolCode, int rentalDayCount, int discountPercent) {
-		RentalAgreement ra = new RentalAgreement();
+	public static RentalAgreement checkout(Tool theTool, int rentalDayCount, int discountPercent, Date theDate) {
+		RentalAgreement ra = new RentalAgreement(theTool, rentalDayCount, discountPercent);
 		
 		return ra;
 	}
 	
-	
-	/*
-	 * A weekend day is either Saturday or Sunday.
-	 */
-	public static boolean isWeekend(Calendar cal) {
-		if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
-			return true;
-		}
-		return false;
-	}
-	
-	
-	/*
-	 * July 4th - If falls on weekend, it is observed on the closest weekday.
-	 * (if Sat, then Friday before, if Sunday, then Monday after)
-	 */
-	public static boolean isIndependanceDay(Calendar cal) {
-		if (cal.get(Calendar.MONTH) == Calendar.JULY && cal.get(Calendar.DAY_OF_MONTH) == 4) {
-			return true;
-		}
-		return false;
-	}
-	
-	
-	/*
-	 * First Monday in September.
-	 */
-	public static boolean isLaborDay(Calendar cal) {
-		if (cal.get(Calendar.MONTH) == Calendar.SEPTEMBER && cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) == 1 && cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-			return true;
-		}
-		return false;
-	}
 		
 }
