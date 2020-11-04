@@ -9,6 +9,9 @@ public class Tool{
 	boolean weekendCharge;
 	boolean holidayCharge;
 
+	public Tool() {
+		
+	}
 	
 	public Tool(String type, String brand, String code, double charge, boolean weekday, boolean weekend, boolean holiday) {
 		this.toolType = type;
