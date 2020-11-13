@@ -138,14 +138,18 @@ public class RentalAgreement {
 		observed.set(Calendar.DATE, 4);
 		observed.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 		
+		
 		switch(observed.get(Calendar.DAY_OF_WEEK)){
-			case Calendar.SATURDAY:
+			//Saturday
+			case 5:
 				observed.set(Calendar.DATE, 3);
 				break;
-			case Calendar.SUNDAY: 
+			//Sunday
+			case 6: 
 				observed.set(Calendar.DATE, 5);
 				break;
-			default : // weekday
+			//Weekday
+			default : 
 				break;
         }
 		
