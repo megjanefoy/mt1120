@@ -4,12 +4,15 @@ import java.text.ParseException;
 
 public class Checkout{
 	
-	//global scanner instance
+	//scanner instance
 	private static Scanner in = new Scanner(System.in);
 	
 	
+	/*
+	 * Main Method.
+	 */
 	public static void main(String[] args) {
-		Date date = new Date();
+		Calendar date = Calendar.getInstance();
 		Tool requestedTool = new Tool();
 		int daysRequested = -1;
 		int discountPercent = -1;
@@ -20,12 +23,6 @@ public class Checkout{
 		Inventory.addTool("JAKR", new Tool("Jackhammer", "Ridgid", "JAKR", 2.99, true, false, false));
 		Inventory.addTool("JAKD", new Tool("Jackhammer", "DeWalt", "JAKD", 2.99, true, false, false));
 		
-		
-		for (Map.Entry<String,Tool> entry : Inventory.toolList.entrySet()) {
-			entry.getValue().printAttributes();
-			System.out.println("");
-		}
-		
 		//prompts user for input
 		requestedTool = getTool();
 		daysRequested = getDayCount();
@@ -33,10 +30,14 @@ public class Checkout{
 		date = getDate();
 		
 		//checks out product
-				checkout(requestedTool, daysRequested, discountPercent, date);	
+		checkout(requestedTool, daysRequested, discountPercent, date);	
 				
 	}
 	
+	
+	/*
+	 * Gets requested Tool object.
+	 */
 	public static Tool getTool() {
 		boolean inList = false;
 		Tool reqTool = new Tool();
@@ -63,6 +64,9 @@ public class Checkout{
 	}
 		
 		
+	/*
+	 * Gets requested rental day count.
+	 */
 	public static int getDayCount() {
 		int inputNumDays = 0;
 
@@ -82,6 +86,10 @@ public class Checkout{
 		return inputNumDays;
 	}
 		
+	
+	/*
+	 * Gets discount amount.
+	 */
 	public static int getDiscount() {
 		int inputDiscount = 0;
 		
@@ -102,42 +110,60 @@ public class Checkout{
 	}
 		
 	
-	public static Date getDate() {	
-		Date date = null;
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy");
-		formatter.setLenient(false);
+	/*
+	 * Gets start date of rental.
+	 */
+	public static Calendar getDate() {	
+		Scanner input = new Scanner(System.in);
+		Calendar date = Calendar.getInstance();
 		String inputDate = "";
 		
-		
-		try { 
-			System.out.println("Enter start date: ");
-			if(in.hasNextLine()) {
-				inputDate = in.nextLine();
-				date = formatter.parse(inputDate);
+		System.out.println("Enter start date: ");
+		if(input.hasNextLine()) {
+			inputDate = input.nextLine();
+			String[] arr = inputDate.split("/"); 
+			int theMonth = (int) Integer.parseInt(arr[0]);
+			int theDate = (int) Integer.parseInt(arr[1]);
+			int theYear = (int) Integer.parseInt(arr[2]) %100;
+			
+			if (theMonth >= 1 && theMonth <= 12) {
+				date.set(Calendar.MONTH, theMonth-1);
 			}
 			else {
-				throw new Exception();
+				System.out.println("Invalid month. Please enter date format as MM/DD/YY");
+				getDate();
 			}
-		} catch (ParseException e) {
-			System.out.println("Invalid entry. Please enter date format as MM/DD/YY");
-			getDate();
-		} catch (Exception e) {
+			if (theDate >= 1 || theDate <= 31) {
+				date.set(Calendar.DATE, theDate);
+			}
+			else {
+				System.out.println("Invalid date. Please enter date format as MM/DD/YY");
+				getDate();
+			}
+			if(theYear >= 0 || theYear <= (date.get(Calendar.YEAR)%100)) {
+				date.set(Calendar.YEAR, theYear);
+			}
+			else {
+				System.out.println("Invalid year. Please enter date format as MM/DD/YY");
+				getDate();
+			}
+		}
+		else {
 			System.out.println("Invalid entry. Please enter date format as MM/DD/YY");
 			getDate();
 		}
-		
+
 		return date;
 	}
 
 	
 	
 	/*
-	 * Checks out tool and produces a Rental Agreement.
+	 * Checks out tool and produces/print a Rental Agreement.
 	 */
-	public static RentalAgreement checkout(Tool theTool, int rentalDayCount, int discountPercent, Date theDate) {
-		RentalAgreement ra = new RentalAgreement(theTool, rentalDayCount, discountPercent);
-		
-		return ra;
+	public static void checkout(Tool theTool, int rentalDayCount, int discountPercent, Calendar theDate) {
+		RentalAgreement ra = new RentalAgreement(theTool, rentalDayCount, discountPercent, theDate);
+		ra.printRentalAgreement();
 	}
 	
 		

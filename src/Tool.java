@@ -13,6 +13,9 @@ public class Tool{
 		
 	}
 	
+	/*
+	 * Defines tool object attributes.
+	 */
 	public Tool(String type, String brand, String code, double charge, boolean weekday, boolean weekend, boolean holiday) {
 		this.toolType = type;
 		this.toolBrand = brand;
@@ -23,6 +26,10 @@ public class Tool{
 		this.holidayCharge = holiday;
 	}
 	
+	
+	/*
+	 * Prints attributes of Tool object.
+	 */
 	public void printAttributes() {
 		System.out.println("Tool type is: " + toolType);
 		System.out.println("Tool brand is: " + toolBrand);
