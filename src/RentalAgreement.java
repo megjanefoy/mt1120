@@ -1,18 +1,18 @@
 import java.util.*;
-import java.time.*;
 import java.text.*;
 
+
 public class RentalAgreement {
-	private static SimpleDateFormat sf = new SimpleDateFormat("MM/dd/yy");
-	private static Calendar checkoutDate = Calendar.getInstance();
-	private static Calendar dueDate = Calendar.getInstance();
-	private static Tool theTool = new Tool();
-	private static int rentalDayCount = -1;
-	private static int discountPercent = -1;
-	private static int chargeableDays = -1;
-	private static double prediscountCharge = 0.0;
-	private static double discountAmount = 0.0;
-	private static double finalAmount = 0.0;
+	static SimpleDateFormat sf = new SimpleDateFormat("MM/dd/yy");
+	static Calendar checkoutDate = Calendar.getInstance();
+	static Calendar dueDate = Calendar.getInstance();
+	static Tool theTool = new Tool();
+	static int rentalDayCount = -1;
+	static int discountPercent = -1;
+	static int chargeableDays = -1;
+	static double prediscountCharge = 0.0;
+	static double discountAmount = 0.0;
+	static double finalAmount = 0.0;
 	
 	public RentalAgreement(Tool aTool, int dayCount, int discPercent, Calendar aDate) {
 		checkoutDate = (Calendar) aDate.clone();
@@ -38,12 +38,12 @@ public class RentalAgreement {
 		System.out.println("Rental Days: " + rentalDayCount);
 		System.out.println("Checkout Date: " + sf.format(checkoutDate.getTime()));
 		System.out.println("Due Date: " + sf.format(dueDate.getTime()));
-		System.out.println("Daily Rental Charge: " + theTool.dailyCharge);
+		System.out.println("Daily Rental Charge: $" + theTool.dailyCharge);
 		System.out.println("Charge Days: " + chargeableDays);
-		System.out.println("Pre-Discount Charge: " + prediscountCharge);
+		System.out.println("Pre-Discount Charge: $" + String.format("%.2f", prediscountCharge));
 		System.out.println("Discount Percent: " + discountPercent + "%");
-		System.out.println("Discount Amount: " + discountAmount);
-		System.out.println("Final Charge: " + finalAmount);
+		System.out.println("Discount Amount: $" + String.format("%.2f", discountAmount));
+		System.out.println("Final Charge: $" + String.format("%.2f", finalAmount));
 		
 		
 	}
@@ -54,8 +54,8 @@ public class RentalAgreement {
 	 */
 	public static double calculateFinalAmount() {
 		double finalAmnt = prediscountCharge - discountAmount;
-		String finalStr = String.format("%.2f", finalAmnt);
-		finalAmnt = Double.parseDouble(finalStr);
+//		String finalStr = String.format("%.2f", finalAmnt);
+//		finalAmnt = Double.parseDouble(finalStr);
 		
 		if(finalAmnt < 0.0) {
 			finalAmnt = 0.0;
@@ -119,8 +119,7 @@ public class RentalAgreement {
 	 * (A weekend day being either Saturday or Sunday)
 	 */
 	public static boolean isWeekend(Calendar cal) {
-		System.out.println("Date is: " + sf.format(cal.getTime()));
-		if((cal.get(Calendar.DAY_OF_WEEK) == 5) || (cal.get(Calendar.DAY_OF_WEEK) == 6)){
+		if((cal.get(Calendar.DAY_OF_WEEK) == 1) || (cal.get(Calendar.DAY_OF_WEEK) == 7)){
 			return true;
 		}
 		return false;
@@ -141,11 +140,11 @@ public class RentalAgreement {
 		
 		switch(observed.get(Calendar.DAY_OF_WEEK)){
 			//Saturday
-			case 5:
+			case 7:
 				observed.set(Calendar.DATE, 3);
 				break;
 			//Sunday
-			case 6: 
+			case 1: 
 				observed.set(Calendar.DATE, 5);
 				break;
 			//Weekday
@@ -162,6 +161,7 @@ public class RentalAgreement {
 	
 	/*
 	 * Checks if date falls on Labor Day.
+	 * (First Monday in September)
 	 */
 	public static boolean isLaborDay(Calendar cal) {
 		if (cal.get(Calendar.MONTH) == Calendar.SEPTEMBER && cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) == 1 && cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {

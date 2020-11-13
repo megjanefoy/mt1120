@@ -1,7 +1,6 @@
 import java.util.*;
 
 public class Inventory {
-	
 	//public array list of Tools 
 	static HashMap<String, Tool> toolList = new HashMap<String,Tool>();
 		

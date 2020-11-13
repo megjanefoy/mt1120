@@ -1,6 +1,4 @@
 import java.util.*;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
 public class Checkout{
 	
@@ -30,8 +28,7 @@ public class Checkout{
 		date = getDate();
 		
 		//checks out product
-		checkout(requestedTool, daysRequested, discountPercent, date);	
-				
+		checkout(requestedTool, daysRequested, discountPercent, date);		
 	}
 	
 	
@@ -164,6 +161,7 @@ public class Checkout{
 	public static void checkout(Tool theTool, int rentalDayCount, int discountPercent, Calendar theDate) {
 		RentalAgreement ra = new RentalAgreement(theTool, rentalDayCount, discountPercent, theDate);
 		ra.printRentalAgreement();
+		System.out.println("");
 	}
 	
 		
